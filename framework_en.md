@@ -1,7 +1,7 @@
 C CPP Project Framework (Template)
 ===================
 
-[中文](./README_ZH.md)
+[中文](./framework.md)
 
 **Simple** and **configurable** `C/C++` project/SDK template 
 > `CMake` build system and support Kconfig with `GUI` configuration

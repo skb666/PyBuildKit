@@ -1,7 +1,7 @@
 C CPP Project Framework (Template)
 ===================
 
-[English](./README.md)
+[English](./framework_en.md)
 
 一个足够 **简单易用** 并且 **可配置的**用于构建 `C/C++` 的模板工程
 > 使用 `CMake` 构建，并且支持带`GUI`配置界面的 `Kconfig`
