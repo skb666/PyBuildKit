@@ -1,0 +1,5 @@
+config EVENT_ENABLED
+    bool "enable event"
+    help
+        通过 vcpkg 安装的 libevent
+    default n
