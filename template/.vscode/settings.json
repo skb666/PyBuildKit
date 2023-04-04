@@ -1,0 +1,9 @@
+{
+    "cmake.sourceDirectory": [
+        "${workspaceFolder}/test_sample",
+        "${workspaceFolder}/test_vcpkg",
+    ],
+    "cmake.buildDirectory": "${sourceDirectory}/build",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.configureOnOpen": false
+}
