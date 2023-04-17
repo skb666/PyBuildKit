@@ -1,3 +1,3 @@
 # Components configuration
-CONFIG_TOOLCHAIN_PATH="~/vcpkg/scripts/buildsystems/vcpkg.cmake"
+CONFIG_USING_VCPKG=y
 CONFIG_EVENT_ENABLED=y

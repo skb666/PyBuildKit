@@ -1,18 +1,22 @@
-
 mainmenu "C/CPP CMake project framework Kconfig configuration"
 
 menu "Toolchain configuration"
-	config TOOLCHAIN_PATH
-		string "toolchain path"
-		default ""
+    config TOOLCHAIN_PATH
+        string "toolchain path"
+        default ""
 
-	config TOOLCHAIN_PREFIX
-		string "toolchain prefix"
-		default ""
+    config TOOLCHAIN_PREFIX
+        string "toolchain prefix"
+        default ""
 endmenu
 
 menu "Components configuration"
-	osource "${SDK_PATH}/components/*/Kconfig"
-	osource "${PROJECT_PATH}/../components/*/Kconfig"
-	osource "${PROJECT_PATH}/*/Kconfig"
+    config USING_VCPKG
+        depends on (TOOLCHAIN_PATH = "$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake")
+        bool "using vcpkg"
+        default n
+
+    osource "${SDK_PATH}/components/*/Kconfig"
+    osource "${PROJECT_PATH}/../components/*/Kconfig"
+    osource "${PROJECT_PATH}/*/Kconfig"
 endmenu

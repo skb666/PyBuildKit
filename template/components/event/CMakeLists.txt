@@ -1,4 +1,4 @@
-if(CONFIG_EVENT_ENABLED AND CONFIG_TOOLCHAIN_PATH MATCHES ".*.cmake$")
+if(CONFIG_EVENT_ENABLED)
     ############## Import package #################
     find_package(Libevent CONFIG REQUIRED)
     ###############################################

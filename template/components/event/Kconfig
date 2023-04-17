@@ -1,4 +1,5 @@
 config EVENT_ENABLED
+    depends on USING_VCPKG
     bool "enable event"
     help
         通过 vcpkg 安装的 libevent

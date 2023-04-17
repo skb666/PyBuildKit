@@ -337,8 +337,17 @@ macro(project name)
         set(DL_EXT ".so")
     endif()
 
+    message("")
+
     # Config toolchain
     if(CONFIG_TOOLCHAIN_PATH MATCHES ".*.cmake$" AND NOT CMAKE_TOOLCHAIN_FILE)
+        if(CONFIG_TOOLCHAIN_PATH MATCHES ".*/scripts/buildsystems/vcpkg.cmake$")
+            # Check VCPKG_ROOT
+            message("VCPKG toolchain file: $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+            if(NOT EXISTS "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+                message(FATAL_ERROR "The system environment variable VCPKG_ROOT was incorrectly set.")
+            endif()
+        endif()
         message("-- CONFIG_TOOLCHAIN_PATH is cmake file: ${CONFIG_TOOLCHAIN_PATH}")
         set(CMAKE_TOOLCHAIN_FILE ${CONFIG_TOOLCHAIN_PATH})
     endif()
@@ -366,7 +375,7 @@ macro(project name)
             set(CMAKE_C_COMPILER "gcc${EXT}")
             set(CMAKE_CXX_COMPILER "g++${EXT}")
             set(CMAKE_ASM_COMPILER "gcc${EXT}")
-            set(CMAKE_LINKER  "ld${EXT}")
+            set(CMAKE_LINKER "ld${EXT}")
         endif()
     endif()
 
@@ -395,6 +404,8 @@ macro(project name)
     else()
         add_definitions(-DRELEASE=1)
     endif()
+
+    message("")
 
     # Add dependence: update configfile, append time and git info for global config header file
     # we didn't generate build info for cmake and makefile for if we do, it will always rebuild cmake
@@ -448,6 +459,8 @@ macro(project name)
 
     # Add main component(lib)
     target_link_libraries(${name} main)
+
+    message("")
 
     # Add binary
     if(EXISTS "${PROJECT_PATH}/compile/gen_binary.cmake")
