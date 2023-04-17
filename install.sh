@@ -398,11 +398,10 @@ check_system_environment() {
 }
 
 install() {
+    PYBUILDKIT_PATH="${INSTALL_PATH}/PyBuildKit"
+
     check_pybuildkit_remote
-    
     if [[ $? -ne 0 ]]; then
-        say "clone 'skb666/PyBuildKit' from github"
-        PYBUILDKIT_PATH="${INSTALL_PATH}/PyBuildKit"
         if [[ -d ${PYBUILDKIT_PATH} ]]; then
             say "'${PYBUILDKIT_PATH}' already exists, upgrade"
             cd ${PYBUILDKIT_PATH}
@@ -410,14 +409,21 @@ install() {
             git submodule update --init --recursive
             cd ${RUNNING_DIR}
         else
+            say "clone 'skb666/PyBuildKit' from github"
             ensure_dir ${PYBUILDKIT_PATH}
             ensure_run git clone https://github.com/skb666/PyBuildKit.git --recursive ${PYBUILDKIT_PATH}
         fi
     else
         say "upgrade the git repository"
-        PYBUILDKIT_PATH=${PWD}
         git pull --rebase
         git submodule update --init --recursive
+        if [[ ${ASSIGN_PATH} = true ]]; then
+            say "copy '${PWD}' to '${PYBUILDKIT_PATH}'"
+            ensure_dir ${PYBUILDKIT_PATH}
+            ensure_run cp -r ${PWD} ${PYBUILDKIT_PATH}
+        else
+            PYBUILDKIT_PATH=${PWD}
+        fi
     fi
     
     say "install 'PyBuildKit' successfully!"
@@ -476,7 +482,7 @@ FLAGS:
     -w, --with-vcpkg        Install the vcpkg extension
 
 OPTIONS:
-    -d <install_path>       Specify the path to install to
+    -d [install_path]       Specify the path to install to
 EOF
 }
 
@@ -490,6 +496,7 @@ main() {
     check_system_environment
     
     INSTALL_PATH=""
+    ASSIGN_PATH=false
     
     local using_vcpkg=false
     local missing_arg=""
@@ -531,6 +538,7 @@ main() {
                         ;;
                         d)
                             missing_arg=${sub_arg}
+                            ASSIGN_PATH=true
                         ;;
                         *)
                             usage
