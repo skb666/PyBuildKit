@@ -411,7 +411,12 @@ install() {
         else
             say "clone 'skb666/PyBuildKit' from github"
             ensure_dir ${PYBUILDKIT_PATH}
-            ensure_run git clone https://github.com/skb666/PyBuildKit.git --recursive ${PYBUILDKIT_PATH}
+            git clone https://github.com/skb666/PyBuildKit.git --recursive ${PYBUILDKIT_PATH}
+            if [[ $? -ne 0 ]]; then
+                say "Failed to install 'PyBuildKit'"
+                rm -rf ${PYBUILDKIT_PATH}
+                exit 1
+            fi
         fi
     else
         say "upgrade the git repository"
@@ -447,7 +452,12 @@ install_vcpkg() {
             cd ${RUNNING_DIR}
         else
             ensure_dir ${VCPKG_PATH}
-            ensure_run git clone https://github.com/microsoft/vcpkg.git --recursive ${VCPKG_PATH}
+            git clone https://github.com/microsoft/vcpkg.git --recursive ${VCPKG_PATH}
+            if [[ $? -ne 0 ]]; then
+                say "Failed to install 'vcpkg'"
+                rm -rf ${VCPKG_PATH}
+                exit 1
+            fi
             ensure_run ${VCPKG_PATH}/bootstrap-vcpkg.sh
         fi
     fi
