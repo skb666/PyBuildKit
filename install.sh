@@ -334,6 +334,19 @@ get_architecture() {
     RETVAL="$_arch"
 }
 
+check_network() {
+    need_cmd ping
+    
+    ping -c 1 -W 1 github.com > /dev/null 2>&1
+    
+    if [ $? -ne 0 ]; then
+        say "network is disconnected"
+        return 1
+    fi
+    
+    return 0
+}
+
 check_git_repository() {
     need_cmd git
     
@@ -361,7 +374,10 @@ check_pybuildkit_remote() {
 }
 
 apt_install() {
-    if ! check_cmd apt; then
+    check_network
+    local result=$?
+    
+    if ! check_cmd apt || [[ ${result} -ne 0 ]]; then
         for pack in $@; do
             echo "[warning] You should ensure '$pack' is already installed."
         done
@@ -391,7 +407,7 @@ check_system_environment() {
     say "check the basic environment of system"
     
     package_install git python3 cmake pkg-config curl wget zip unzip tar
-
+    
     if ! check_cmd gcc || ! check_cmd g++; then
         apt_install build-essential
     fi
@@ -399,35 +415,46 @@ check_system_environment() {
 
 install() {
     PYBUILDKIT_PATH="${INSTALL_PATH}/PyBuildKit"
-
-    check_pybuildkit_remote
+    
+    check_network
     if [[ $? -ne 0 ]]; then
-        if [[ -d ${PYBUILDKIT_PATH} ]]; then
-            say "'${PYBUILDKIT_PATH}' already exists, upgrade"
-            cd ${PYBUILDKIT_PATH}
-            git pull --rebase
-            git submodule update --init --recursive
-            cd ${RUNNING_DIR}
-        else
-            say "clone 'skb666/PyBuildKit' from github"
-            ensure_dir ${PYBUILDKIT_PATH}
-            git clone https://github.com/skb666/PyBuildKit.git --recursive ${PYBUILDKIT_PATH}
-            if [[ $? -ne 0 ]]; then
-                say "Failed to install 'PyBuildKit'"
-                rm -rf ${PYBUILDKIT_PATH}
-                exit 1
-            fi
-        fi
-    else
-        say "upgrade the git repository"
-        git pull --rebase
-        git submodule update --init --recursive
         if [[ ${ASSIGN_PATH} = true ]]; then
             say "copy '${PWD}' to '${PYBUILDKIT_PATH}'"
             ensure_dir ${PYBUILDKIT_PATH}
-            ensure_run cp -r ${PWD} ${PYBUILDKIT_PATH}
+            ensure_run cp -rf ${PWD} ${INSTALL_PATH}
         else
             PYBUILDKIT_PATH=${PWD}
+        fi
+    else
+        check_pybuildkit_remote
+        if [[ $? -ne 0 ]]; then
+            if [[ -d ${PYBUILDKIT_PATH} ]]; then
+                say "'${PYBUILDKIT_PATH}' already exists, upgrade"
+                cd ${PYBUILDKIT_PATH}
+                git pull --rebase
+                git submodule update --init --recursive
+                cd ${RUNNING_DIR}
+            else
+                say "clone 'skb666/PyBuildKit' from github"
+                ensure_dir ${PYBUILDKIT_PATH}
+                git clone https://github.com/skb666/PyBuildKit.git --recursive ${PYBUILDKIT_PATH}
+                if [[ $? -ne 0 ]]; then
+                    say "Failed to install 'PyBuildKit'"
+                    rm -rf ${PYBUILDKIT_PATH}
+                    exit 1
+                fi
+            fi
+        else
+            say "upgrade the git repository"
+            git pull --rebase
+            git submodule update --init --recursive
+            if [[ ${ASSIGN_PATH} = true ]]; then
+                say "copy '${PWD}' to '${PYBUILDKIT_PATH}'"
+                ensure_dir ${PYBUILDKIT_PATH}
+                ensure_run cp -rf ${PWD} ${INSTALL_PATH}
+            else
+                PYBUILDKIT_PATH=${PWD}
+            fi
         fi
     fi
     
@@ -443,6 +470,12 @@ install_vcpkg() {
         git pull --rebase
         cd ${RUNNING_DIR}
     else
+        check_network
+        if [[ $? -ne 0 ]]; then
+            say "Failed to install 'vcpkg'"
+            exit 1
+        fi
+        
         say "clone 'microsoft/vcpkg' from github"
         VCPKG_PATH="${INSTALL_PATH}/vcpkg"
         if [[ -e ${VCPKG_PATH} ]]; then
@@ -502,7 +535,7 @@ main() {
     assert_nz ${_arch} "arch"
     
     echo "architecture: ${_arch}"
-
+    
     check_system_environment
     
     INSTALL_PATH=""

@@ -38,8 +38,8 @@ chmod +x ./install.sh
 
 **安装完成后，你可以通过执行 `. $HOME/.mysdk/env` 以临时配置编译环境；或者将 `. $HOME/.mysdk/env` 写入 `~/.profile`、`~/.bashrc`、`~/.zshenv` 等文件后重新登入 shell 以使环境配置永久生效。**
 
-> 若提示 *"Please run as root"*，请使用 `sudo` 以管理员身份重新执行脚本，使其可以自动安装必须的一些软件包;
-> 若提示 *"[warning] You should ensure 'xxx' is already installed."*，请根据提示，确保系统已安装软件包 'xxx';
+> 若提示 *"Please run as root"*，请使用 `sudo` 以管理员身份重新执行脚本，使其可以自动安装必须的一些软件包;  
+> 若提示 *"[warning] You should ensure 'xxx' is already installed."*，请根据提示，确保系统已安装软件包 'xxx';  
 > 你也可以手动安装这些软件包后重新运行安装脚本：`git` `python3` `cmake` `build-essential` `pkg-config` `curl` `wget` `zip` `unzip` `tar`
 
 ## 编译、运行测试
