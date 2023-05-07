@@ -2,7 +2,10 @@
 
 一个强大的 C/C++ SDK 编译框架，基于 CMake 和 Kconfig，结合了 Python 脚本进行项目管理。
 
-基于 [Neutree](https://github.com/Neutree) 的代码构建框架: [c_cpp_project_framework](./framework.md)
+基于 [Neutree](https://github.com/Neutree) 的代码构建框架: [c_cpp_project_framework](./framework.md)；  
+在此基础上引入对 [vcpkg](https://github.com/microsoft/vcpkg/blob/master/README_zh_CN.md) 的支持，方便在做跨平台开发时能够快速在宿主机做一些三方库的功能验证与 demo  
+利用 cmake 对 vcpkg 的良好支持，我们可以通过 vcpkg.json 实现库自动安装与版本控制；  
+此外，你可以通过使用 `Visual Studio Code` + `CMake Tools (>=1.13.40)` 获得较好的 [UI 支持](https://github.com/Neutree/c_cpp_project_framework/issues/4)。
 
 ## 安装
 
