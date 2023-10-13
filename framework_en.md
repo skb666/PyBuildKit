@@ -175,6 +175,19 @@ python3 project.py menuconfig
 python3 project.py build
 ```
 
+## Custom components path
+
+Generally, the common components are placed in the `SDK directory -> components directory`, and the project-specific components are placed in the `project directory`.
+In addition, users can also customize the storage location of their common components by setting the system environment variable `CUSTOM_COMPONENTS_PATH`, for example:
+Linux:
+```
+export CUSTOM_COMPONENTS_PATH=/home/neucrack/my_components
+```
+Windows just add `CUSTOM_COMPONENTS_PATH` variable in the environment variable interface.
+> The name `CUSTOM_COMPONENTS_PATH` can be modified according to your project name or preference in the `project.py` and `CMakeLists.txt` of the project.
+
+Then you can directly use `list(APPEND ADD_REQUIREMENTS component_name)` to reference it in the project component.
+
 ## Debug and Release version
 
 By default, it is compiled in debug version. If you want to release version, you can use the following command:
@@ -260,6 +273,31 @@ node demo1.js
 
 By default we can use `python project.py run` to call [tools/run.py](./tools/run.py) file, and execute the binary file.
 If you want to add commands for your SDK, just create new `py` file in tools directory, write a script and content refer to [tools/run.py](./tools/run.py).
+
+## Online Debugging
+
+### VSCode + GDB Online Debugging
+
+Here take PC with Linux system as an example:
+
+* Add `c_cpp_project_framework` (recommended for the first trial) or project directory to VSCode workspace
+* Copy the [./assets/vscode_local_debug/.vscode](./assets/vscode_local_debug/.vscode) directory to the working directory of the previous step
+* Edit the `cwd` field in `.vscode/launch.json` according to whether `.vscode` is under `c_cpp_project_framework` or under the project directory
+* Press F5 on the keyboard to start debugging
+> Windows is similar, just modify the relevant commands and paths in `.vscode`
+
+### VSCode + gdbserver Debugging on Embedded Device (/Remote Device with Linux System)
+
+Here take PC with Linux system as an example:
+
+* Firstly, Ensure that the remote device has the `gdbserver` program, and the PC has the `gdb-multiarch` program
+* Copy the [./assets/vscode_remote_debug/.vscode](./assets/vscode_remote_debug/.vscode) directory to the project directory
+* Edit the `launch.json` and `build_run_gdbserver.sh` files, modify the paths and commands inside, as well as the username, etc.
+> It is recommended to add the PC's ssh key to the `~/.ssh/authorized_keys` file of the remote device first, so you don't need to enter a password.
+* The `build_run_gdbserver.sh` script needs to be executed every time you debug, and then press F5 in VSCode to start debugging
+> The script will compile the project, then copy the executable file to the remote device, and start `gdbserver`.
+> Press F5 to start debugging, VSCode uses GDB to connect to `gdbserver` on the remote device for debugging.
+
 
 ## License
 

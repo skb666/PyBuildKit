@@ -241,6 +241,10 @@ macro(project name)
 
     # Find components in SDK's components folder, register components
     find_components(components_dirs components_kconfig_files kconfig_defaults_files_args found_main ${SDK_PATH}/components/*)
+    # Find components in custom components folder, register components
+    if(CUSTOM_COMPONENTS_PATH)
+        find_components(components_dirs components_kconfig_files kconfig_defaults_files_args found_main ${CUSTOM_COMPONENTS_PATH}/*)
+    endif()
     # Find components in projects' shared components folder, register components
     find_components(components_dirs components_kconfig_files kconfig_defaults_files_args found_main ${PROJECT_SOURCE_DIR}/../components/*)
     # Find components in project folder
@@ -277,23 +281,25 @@ macro(project name)
     message(STATUS "python command: ${python}, version: ${python_info_str}")
     string(REPLACE ";" " " components_kconfig_files "${kconfig_defaults_files_args}")
     string(REPLACE ";" " " components_kconfig_files "${components_kconfig_files}")
-    set(generate_config_cmd ${python}  ${SDK_PATH}/tools/kconfig/genconfig.py
+    set(generate_config_cmd ${python} -u ${SDK_PATH}/tools/kconfig/genconfig.py
                             --kconfig "${SDK_PATH}/Kconfig"
                             ${kconfig_defaults_files_args}
                             --menuconfig False
                             --env "SDK_PATH=${SDK_PATH}"
                             --env "PROJECT_PATH=${PROJECT_SOURCE_DIR}"
+                            --env "CUSTOM_COMPONENTS_PATH=${CUSTOM_COMPONENTS_PATH}"
                             --env "BUILD_TYPE=${CMAKE_BUILD_TYPE}"
                             --output makefile ${PROJECT_BINARY_DIR}/config/global_config.mk
                             --output cmake  ${PROJECT_BINARY_DIR}/config/global_config.cmake
                             --output header ${PROJECT_BINARY_DIR}/config/global_config.h
                             )
-    set(generate_config_cmd2 ${python}  ${SDK_PATH}/tools/kconfig/genconfig.py
+    set(generate_config_cmd2 ${python} -u ${SDK_PATH}/tools/kconfig/genconfig.py
                             --kconfig "${SDK_PATH}/Kconfig"
                             ${kconfig_defaults_files_args}
                             --menuconfig True
                             --env "SDK_PATH=${SDK_PATH}"
                             --env "PROJECT_PATH=${PROJECT_SOURCE_DIR}"
+                            --env "CUSTOM_COMPONENTS_PATH=${CUSTOM_COMPONENTS_PATH}"
                             --env "BUILD_TYPE=${CMAKE_BUILD_TYPE}"
                             --output makefile ${PROJECT_BINARY_DIR}/config/global_config.mk
                             --output cmake  ${PROJECT_BINARY_DIR}/config/global_config.cmake
@@ -384,9 +390,9 @@ macro(project name)
 
     # add DEBUG or RELEASE flag globally
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_definitions(-DDEBUG=1)
+        add_definitions(-DDEBUG=1 -DRELEASE=0)
     else()
-        add_definitions(-DRELEASE=1)
+        add_definitions(-DRELEASE=1 -DDEBUG=0)
     endif()
 
     message("")
@@ -417,7 +423,7 @@ macro(project name)
     # Call CMakeLists.txt
     foreach(component_dir ${component_dirs_sorted})
         get_filename_component(base_dir ${component_dir} NAME)
-        add_subdirectory(${component_dir} ${base_dir})
+        add_subdirectory(${component_dir} ${base_dir} EXCLUDE_FROM_ALL)
         if(TARGET ${base_dir})
             add_dependencies(${base_dir} update_build_info) # add build info dependence
         else()
