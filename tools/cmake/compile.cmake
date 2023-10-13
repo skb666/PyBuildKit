@@ -389,10 +389,12 @@ macro(project name)
     endif()
 
     # add DEBUG or RELEASE flag globally
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_definitions(-DDEBUG=1 -DRELEASE=0)
+        # message("!!! DEBUG !!!")
     else()
         add_definitions(-DRELEASE=1 -DDEBUG=0)
+        # message("!!! RELEASE !!!")
     endif()
 
     message("")
