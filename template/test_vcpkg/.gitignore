@@ -1,6 +1,6 @@
+**/build
+**/.cache
 
-
-build
 .config.mk
 .flash.conf.json
 

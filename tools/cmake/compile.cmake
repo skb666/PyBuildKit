@@ -4,6 +4,7 @@
 # @license Apache 2.0
 #
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Convert to cmake path(for Windows)
 file(TO_CMAKE_PATH "${SDK_PATH}" SDK_PATH)
