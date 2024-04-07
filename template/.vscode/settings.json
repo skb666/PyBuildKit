@@ -1,9 +1,11 @@
 {
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.sourceDirectory": [
         "${workspaceFolder}/test_sample",
         "${workspaceFolder}/test_vcpkg",
     ],
     "cmake.buildDirectory": "${sourceDirectory}/build",
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "cmake.configureOnOpen": false
+    "cmake.autoSelectActiveFolder": true,
+    "cmake.buildBeforeRun": true,
+    "cmake.configureOnOpen": false,
 }
