@@ -1,0 +1,9 @@
+**/build
+**/.cache
+**/target
+**/dist
+
+.config.mk
+.flash.conf.json
+
+*.lock

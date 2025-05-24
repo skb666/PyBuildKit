@@ -1,0 +1,5 @@
+config UTILS_RUST_ENABLED
+    bool "enable utils_rust"
+    help
+        使用 rust 外导符号
+    default n

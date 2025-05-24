@@ -3,9 +3,13 @@
     "cmake.sourceDirectory": [
         "${workspaceFolder}/test_sample",
         "${workspaceFolder}/test_vcpkg",
+        "${workspaceFolder}/test_rust",
     ],
     "cmake.buildDirectory": "${sourceDirectory}/build",
     "cmake.autoSelectActiveFolder": true,
     "cmake.buildBeforeRun": true,
     "cmake.configureOnOpen": false,
+    "rust-analyzer.linkedProjects": [
+        "${workspaceFolder}/test_rust/utils_rust/Cargo.toml",
+    ],
 }
